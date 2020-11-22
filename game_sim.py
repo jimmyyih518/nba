@@ -1,17 +1,5 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Nov 21 17:13:02 2020
-
-@author: JZ2018
-"""
-
-
 import numpy as np
 
-
-#ar1 = np.array([[10, 20, 30],
-#                [8, 4, 12],
-#                [5, 7, 2]]).T
 
 cats = ['pts', 'rbd', 'ast']
 players = ['rondo', 'kcp', 'james', 'davis', 'howard']
@@ -27,10 +15,7 @@ ability_dic = {'rondo': {'pts' : 0.100, 'rbd' : 0.104, 'ast' : 0.241},
 cat_multiplier = {'pts':2.5,
                   'rbd':1,
                   'ast':0.75}
-#ar1[players.index('p2'), cats.index('rbd')]
-#m1 = 100
-#std1 = 10
-#a = np.random.normal(m1, std1, 1)
+
 possessions = 80
 
 def goto_player(posessions, players, pred_possession_split):
@@ -43,7 +28,7 @@ def goto_player(posessions, players, pred_possession_split):
         
     return p_game
 
-#player_possesion = goto_player(5, players, pred_possession_split)
+
 
 def goto_value(player, cat, ability_dic, cat_multiplier):
     value = ability_dic[player][cat]
@@ -51,7 +36,7 @@ def goto_value(player, cat, ability_dic, cat_multiplier):
     value = value*multi
     return value
 
-#val = goto_value('james', 'rbd', ability_dic, cat_multiplier)
+
 
 def run_sim(players, cats, possessions, pred_possession_split ,ability_dic):
     player_possesion = goto_player(possessions, players, pred_possession_split)
