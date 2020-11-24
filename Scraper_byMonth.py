@@ -168,53 +168,53 @@ def getMonthdata(month, page, df_columns):
                         #print('Key Error')                      
                         continue
                 # second table
-                table2 = soup.findAll('table', {'class': "sortable stats_table"})
-                team = table2[9].text.split('\n')[0]
-                parenthesis = team.find('(')
-                team = team[:parenthesis - 1]
-                table2 = table2[9].find('tbody')
-                table2 = table2.find_all('tr')
-                rows = []
-                for row in table2:
-                    #row = table2[0]
-                    name = row.findAll('th')[0].text
-                    cols = row.findAll('td')
-                    cols = [i.text.strip() for i in cols]
-                    cols.append(name)
-                    rows.append(cols)
-                for player in rows:
-                    #player = rows[0]
-                    try:
-                        if len(player) < 21:
-                            #print(player)
-                            continue
-                        else:
-                            #player = [0 if i == '' or isNaN(i) else i for i in player]
-                            colon = player[0].find(':')
-                            time = f'{player[0][:colon]}.{player[0][colon + 1::]}'
-                            if team in team_dictionary:
-                                return_team = team_dictionary[team]
-                            else:
-                                return_team = 'NA'                            
-                            #print(player, len(player))
-                            player_dic = {'Date': date, 'Name': player[-1], 'Team': return_team, 
-                                          'MP': time,'FG': player[1],'FGA': player[2], 
-                                          'FG%': player[3], '3P': player[4], 
-                                          '3PA': player[5],'3P%': player[6], 'FT': player[7], 
-                                          'FTA': player[8], 'FT%': player[9],
-                                          'ORB': player[10], 'DRB': player[11], 
-                                          'TRB': player[12], 'AST': player[13],
-                                          'STL': player[14], 'BLK': player[15], 
-                                          'TOV': player[16], 'PF': player[17],
-                                          'PTS': player[18], '+-': player[19], 'Team_Name': team}
-                            stat_df = stat_df.append(player_dic, ignore_index=True)
-                            continue
-                    except KeyError:
-                        print(str(date) + str(player[-1]) + ':' + 'Key Error')
-                        print(len(player))
-                        print(player)                      
-                        #print('Key Error')
+            table2 = soup.findAll('table', {'class': "sortable stats_table"})
+            team = table2[9].text.split('\n')[0]
+            parenthesis = team.find('(')
+            team = team[:parenthesis - 1]
+            table2 = table2[9].find('tbody')
+            table2 = table2.find_all('tr')
+            rows = []
+            for row in table2:
+                #row = table2[0]
+                name = row.findAll('th')[0].text
+                cols = row.findAll('td')
+                cols = [i.text.strip() for i in cols]
+                cols.append(name)
+                rows.append(cols)
+            for player in rows:
+                #player = rows[0]
+                try:
+                    if len(player) < 21:
+                        #print(player)
                         continue
+                    else:
+                        #player = [0 if i == '' or isNaN(i) else i for i in player]
+                        colon = player[0].find(':')
+                        time = f'{player[0][:colon]}.{player[0][colon + 1::]}'
+                        if team in team_dictionary:
+                            return_team = team_dictionary[team]
+                        else:
+                            return_team = 'NA'                            
+                        #print(player, len(player))
+                        player_dic = {'Date': date, 'Name': player[-1], 'Team': return_team, 
+                                      'MP': time,'FG': player[1],'FGA': player[2], 
+                                      'FG%': player[3], '3P': player[4], 
+                                      '3PA': player[5],'3P%': player[6], 'FT': player[7], 
+                                      'FTA': player[8], 'FT%': player[9],
+                                      'ORB': player[10], 'DRB': player[11], 
+                                      'TRB': player[12], 'AST': player[13],
+                                      'STL': player[14], 'BLK': player[15], 
+                                      'TOV': player[16], 'PF': player[17],
+                                      'PTS': player[18], '+-': player[19], 'Team_Name': team}
+                        stat_df = stat_df.append(player_dic, ignore_index=True)
+                        continue
+                except KeyError:
+                    print(str(date) + str(player[-1]) + ':' + 'Key Error')
+                    print(len(player))
+                    print(player)                      
+                    #print('Key Error')
+                    continue
     return stat_df
 
 
