@@ -6,6 +6,9 @@ Created on Sun Nov 22 19:32:56 2020
 """
 
 
+season_end_year = 2019
+output_filedir = 'D:/JZR/nba/boxscores/'
+
 
 import os
 #print(os.getcwd())
@@ -59,4 +62,8 @@ def get_team_stats(team_dictionary, season_end_year):
         
     return team_df
 
-team_data = get_team_stats(team_dictionary, 2017)
+
+team_data = get_team_stats(team_dictionary, season_end_year)
+
+outfile = output_filedir + 'Season_' + str(season_end_year-1) + '-' + str(season_end_year) + '_teamInfo'
+team_data.to_csv(f'{outfile}.csv')
