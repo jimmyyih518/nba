@@ -55,6 +55,42 @@ team_df = read_folder(team_dir, team_columns, 'team')
 #box_df.to_csv('D:/JZR/nba/full_boxscores.csv')
 #team_df.to_csv('D:/JZR/nba/full_teaminfo.csv')
 
+def tally_team_pos(team_df):
+    
+    POS_list = team_df['POS'].value_counts().to_frame().reset_index()
+    team_df_tally = pd.DataFrame(columns = ['team_name', 'Season', 'count', 'POS'])
+    for p in POS_list['index']:
+        temp_df = team_df[team_df['POS']==p]
+        temp_df_tally = temp_df.groupby(['team_name', 'Season'])['POS'].agg(['count']).reset_index()
+        temp_df_tally['POS'] = p
+        team_df_tally = team_df_tally.append(temp_df_tally)
+        team_df_tally = team_df_tally.sort_values(by=['team_name', 'Season'])
+            
+    team_list = team_df_tally['team_name'].value_counts().reset_index()['index'].tolist()
+    season_list = team_df_tally['Season'].value_counts().reset_index()['index'].tolist()
+    team_df_output = pd.DataFrame(columns = ['team_name', 'Season', 'SG_count','PF_count', 'PG_count', 'C_count','SF_count'])    
+    for t in team_list:
+        for s in season_list:
+            t_temp = pd.DataFrame({'team_name': [t],'Season': [s]})
+            for p in POS_list['index']:
+                p_col = p + '_count'
+                try:
+                    count_p = (team_df_tally[(team_df_tally['team_name'] == t)
+                                & (team_df_tally['Season'] == s) & 
+                                (team_df_tally['POS']==p)]['count'].values[0])
+                except IndexError:
+                    count_p = 0
+                p_temp = pd.DataFrame({p_col:[count_p]})
+                t_temp = pd.concat([t_temp.reset_index(drop=True), p_temp], axis = 1)
+            team_df_output = team_df_output.append(t_temp)   
+    
+    return team_df_output
+
+team_df_tally = tally_team_pos(team_df)
+team_df_tally = team_df_tally.rename(columns={'team_name':'Team_Name'})
+team_df_tally.to_csv('D:/JZR/nba/teamPOStally.csv')
+
+
 team_df = team_df.rename(columns={'PLAYER':'Name', 'team_name':'Team_Name'})    
 #checkt = team_df.query('Name=="Hollis Thompson" & Season=="2015-16"')
 combine_df = box_df.merge(team_df, on=['Name', 'Season', 'Team_Name'], how='left')
@@ -119,7 +155,8 @@ combine_df['Before_AllStarWeek'] = np.where(combine_df['Month'].isin(month_befor
 month_playoff = [4, 5, 6, 7, 8, 9]
 combine_df['Playoff'] = np.where(combine_df['Month'].isin(month_playoff), 1, 0)
 
-combine_df.to_csv('D:/JZR/nba/nba_all.csv')
 
-
+#combine_df = pd.read_csv('D:/JZR/nba/nba_all.csv')
+combine_df = combine_df.merge(team_df_tally, on=['Team_Name', 'Season'], how = 'left')
+combine_df.to_csv('D:/JZR/nba/nba_all.csv', index = False)
 
